@@ -27,6 +27,9 @@ pub struct PrefixContext<'a, U, E> {
     pub data: &'a U,
     /// Custom user data carried across a single command invocation
     pub invocation_data: &'a tokio::sync::Mutex<Box<dyn std::any::Any + Send + Sync>>,
+    // #[non_exhaustive] forbids struct update syntax for ?? reason
+    #[doc(hidden)]
+    pub __non_exhaustive: (),
 }
 // manual Copy+Clone implementations because Rust is getting confused about the type parameter
 impl<U, E> Clone for PrefixContext<'_, U, E> {
@@ -52,6 +55,7 @@ impl<'a, U: std::fmt::Debug, E: std::fmt::Debug> std::fmt::Debug for PrefixConte
             command: _,
             data,
             invocation_data: _,
+            __non_exhaustive: _,
         } = self;
 
         f.debug_struct("PrefixContext")
@@ -132,8 +136,10 @@ pub struct PrefixFrameworkOptions<U, E> {
     /// command does not send a response at all.
     pub ignore_edits_if_not_yet_responded: bool,
 
-    /// Whether commands in messages emitted by the bot itself should be executed as well.
+    /// Whether commands in messages emitted by this bot itself should be executed as well.
     pub execute_self_messages: bool,
+    /// Whether to ignore messages from bots for command invoking. Default `true`
+    pub ignore_bots: bool,
     /// Whether command names should be compared case-insensitively.
     pub case_insensitive_commands: bool,
     /* // TODO: implement
@@ -145,6 +151,9 @@ pub struct PrefixFrameworkOptions<U, E> {
     // /// any specific subcommand is invoked. This command is expected to take the command name as a
     // /// single parameter
     // pub command_specific_help_commmand: Option<Command<U, E>>, */
+    // #[non_exhaustive] forbids struct update syntax for ?? reason
+    #[doc(hidden)]
+    pub __non_exhaustive: (),
 }
 
 impl<U: std::fmt::Debug, E: std::fmt::Debug> std::fmt::Debug for PrefixFrameworkOptions<U, E> {
@@ -159,7 +168,9 @@ impl<U: std::fmt::Debug, E: std::fmt::Debug> std::fmt::Debug for PrefixFramework
             execute_untracked_edits,
             ignore_edits_if_not_yet_responded,
             execute_self_messages,
+            ignore_bots,
             case_insensitive_commands,
+            __non_exhaustive: _,
         } = self;
 
         f.debug_struct("PrefixFrameworkOptions")
@@ -178,6 +189,7 @@ impl<U: std::fmt::Debug, E: std::fmt::Debug> std::fmt::Debug for PrefixFramework
                 ignore_edits_if_not_yet_responded,
             )
             .field("execute_self_messages", execute_self_messages)
+            .field("ignore_bots", ignore_bots)
             .field("case_insensitive_commands", case_insensitive_commands)
             .finish()
     }
@@ -195,10 +207,12 @@ impl<U, E> Default for PrefixFrameworkOptions<U, E> {
             execute_untracked_edits: true,
             ignore_edits_if_not_yet_responded: false,
             execute_self_messages: false,
+            ignore_bots: true,
             case_insensitive_commands: true,
             // help_when_mentioned: true,
             // help_commmand: None,
             // command_specific_help_commmand: None,
+            __non_exhaustive: (),
         }
     }
 }

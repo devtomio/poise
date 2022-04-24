@@ -32,6 +32,8 @@ pub struct FrameworkOptions<U, E> {
     pub manual_cooldowns: bool,
     /// If `true`, changes behavior of guild_only command check to abort execution if the guild is
     /// not in cache.
+    ///
+    /// **If `cache` feature is disabled, this has no effect!**
     pub require_cache_for_guild_check: bool,
     /// Called on every Discord event. Can be used to react to non-command events, like messages
     /// deletions or guild updates.
@@ -49,6 +51,9 @@ pub struct FrameworkOptions<U, E> {
     /// If using [`crate::FrameworkBuilder`], automatically initialized with the bot application
     /// owner and team members
     pub owners: std::collections::HashSet<serenity::UserId>,
+    // #[non_exhaustive] forbids struct update syntax for ?? reason
+    #[doc(hidden)]
+    pub __non_exhaustive: (),
 }
 
 impl<U, E> FrameworkOptions<U, E> {
@@ -79,6 +84,7 @@ impl<U: std::fmt::Debug, E: std::fmt::Debug> std::fmt::Debug for FrameworkOption
             listener,
             prefix_options,
             owners,
+            __non_exhaustive,
         } = self;
 
         f.debug_struct("FrameworkOptions")
@@ -131,6 +137,7 @@ where
             require_cache_for_guild_check: false,
             prefix_options: Default::default(),
             owners: Default::default(),
+            __non_exhaustive: (),
         }
     }
 }

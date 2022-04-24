@@ -1,9 +1,11 @@
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(doc_nightly, feature(doc_cfg, doc_auto_cfg))]
 #![doc(test(attr(deny(deprecated))))]
 #![warn(rust_2018_idioms)]
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 #![allow(clippy::type_complexity)]
+// native #[non_exhaustive] is awful because you can't do struct update syntax with it (??)
+#![allow(clippy::manual_non_exhaustive)]
 
 /*!
 Poise is an opinionated Discord bot framework with a few distinctive features:
@@ -15,14 +17,12 @@ I initially this framework mainly for personal use ([rustbot](<https://github.co
 and [etternabot](<https://github.com/kangalioo/etternabot>)). Features are added on demand, since
 it's easier to draft a good design when you know exactly which practical needs it should cover.
 
-**Warning: API details are subject to change**
-
 # Quickstart
 ```rust,no_run
 */
 // Nested cfg_attr is needed for some reason
-#![cfg_attr(docsrs, cfg_attr(docsrs, doc = include_str!("../examples/quickstart/main.rs")))]
-#![cfg_attr(not(docsrs), doc = "// See ../examples/quickstart/main.rs")]
+#![cfg_attr(doc_nightly, cfg_attr(doc_nightly, doc = include_str!("../examples/quickstart/main.rs")))]
+#![cfg_attr(not(doc_nightly), doc = "// See ../examples/quickstart/main.rs")]
 /*!
 ```
 
